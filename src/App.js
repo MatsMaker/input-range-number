@@ -1,24 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import InputRangeText from './input-range-text';
+
+const MIN_VALUE = 0;
+const MAX_VAlUE = 15;
+const STEP = 1;
+
+function validationFn(nextValue) {
+  if (Number(nextValue.toFixed(0)) === Number(nextValue)) {
+    return true;
+  }
+  return false;
+}
 
 function App() {
+
+  const [count, setCount] = useState(2);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1 className="test-class">Input range number</h1>
+      <ul>
+        <li>
+          <b>Удерживай мышку зажатой и передвигай</b> для грубой настройки
+          используюя input range
+        </li>
+        <li>
+          Обычнй <b>клик</b> и ввод нового значения для точного ввода
+        </li>
+      </ul>
+      <div className="example-wrapper">
+        <InputRangeText
+          min={MIN_VALUE}
+          max={MAX_VAlUE}
+          step={STEP}
+          value={count}
+          onChange={setCount}
+          validation={validationFn}
+          disabled={true}
+        />
+      </div>
     </div>
   );
 }
