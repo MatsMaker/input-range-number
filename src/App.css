@@ -16,8 +16,16 @@ h1, ul {
   min-height: 40%;
 }
 
+.example-optional {
+  margin-top: 3em;
+}
+.example-optional label {
+    color: white;
+    margin-left: .5em;
+}
+
 .example-wrapper {
-  margin-top: 2em;
+  margin-top: .5em;
   width: 50%;
   max-width: 500px;
   font-size: 48px;

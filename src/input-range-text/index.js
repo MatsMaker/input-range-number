@@ -158,48 +158,58 @@ class InputRangeText extends Component {
     this.hardChangeValue(value);
   }
 
+  classnames(values, obj) {
+    const {disabled} = this.props;
+    const {isValid} = this.state;
+    return classnames(values, {
+      irn__invalid: !isValid,
+      irn__disabled: disabled,
+      ...obj,
+    })
+  }
+
   render() {
     const { step, min, max, value, disabled } = this.props;
-    const { isRanging, isValid } = this.state;
+    const { isRanging } = this.state;
     const decrementIsDisabled = disabled || value === min;
     const incrementIsDisabled = disabled || value === max;
 
     return (
 			<div
-				className={classnames("irn__box", {
-          irn__invalid: !isValid,
-          irn__disabled: disabled
-				})}
+				className={this.classnames("irn__box")}
 			>
 				<button
-					className={classnames("irn__button irn_button-decrement", {
+					className={this.classnames("irn__button irn_button-decrement", {
             "irn__disabled": decrementIsDisabled,
           })}
-					onClick={this.handleSubmitButtons(-1 * step)}
+          onClick={this.handleSubmitButtons(-1 * step)}
+          disabled={disabled}
 				>
 					-
 				</button>
 				<div
-					className={classnames("irn__input-box", {
+					className={this.classnames("irn__input-box", {
 						"irn__input-box__ranging": isRanging
 					})}
 				>
-					<div className="irn__range" ref="rangeOfFilled" />
+					<div className={this.classnames("irn__range")} ref="rangeOfFilled" />
           <input
-						className="irn__input"
+						className={this.classnames("irn__input")}
 						ref="input"
 						value={this.props.value}
             onChange={this.handleChangeInput}
             type="text"
-            disabled
+            disabled={disabled}
 					/>
-					<div className="irn__event-box" ref="eventBox" />
+          <div className={this.classnames("irn__event-box")}
+            ref="eventBox" />
 				</div>
 				<button
-					className={classnames("irn__button irn_button-increment", {
+					className={this.classnames("irn__button irn_button-increment", {
             "irn__disabled": incrementIsDisabled,
           })}
-					onClick={this.handleSubmitButtons(+1 * step)}
+          onClick={this.handleSubmitButtons(+1 * step)}
+          disabled={disabled}
 				>
 					+
 				</button>

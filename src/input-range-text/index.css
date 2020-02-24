@@ -24,6 +24,10 @@
   left: 0;
   position: absolute;
 }
+.irn__event-box.irn__disabled {
+  width: 0;
+  height: 0;
+}
 
 .irn__input {
   width: 100%;
@@ -37,6 +41,9 @@
   top: 0;
   position: absolute;
   left: 0;
+}
+.irn__input.irn__disabled {
+  color: #7b7d7f;
 }
 
 .irn__invalid .irn__input {
@@ -91,6 +98,9 @@
   position: absolute;
   top: 0;
   opacity: 75%;
+}
+.irn__range.irn__disabled {
+  background-color: #404040;
 }
 
 .irn__input-box {
