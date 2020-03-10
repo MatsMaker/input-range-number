@@ -1,14 +1,42 @@
 import React, { Component } from "react";
+import PropsTypes from "prop-types";
 import classnames from "classnames";
 
 require("./index.css");
 
 class InputRangeText extends Component {
 
+  static preventDefault = {
+    value: 0,
+    precession: 2,
+    onChange: function(value) {},
+    step: 1,
+    min: 0,
+    max: 10,
+    unit: 'unit',
+    disabled: false,
+    validation: function(value) {return true},
+  }
+
+  static propsTypes = {
+    value: PropsTypes.number,
+    precession: PropsTypes.number,
+    onChange: PropsTypes.func,
+    step: PropsTypes.number,
+    min: PropsTypes.number,
+    max: PropsTypes.number,
+    unit: PropsTypes.string,
+    disabled: PropsTypes.bool,
+    validation: PropsTypes.func,
+  }
+
   constructor(props) {
     super(props);
     this.startPoint = null;
     this.diffToInitRange = 1;
+    this.increaseLoop = null;
+    this.timeFrame = 100;
+    this.increaseMultiplyStep = 0.167; // Goal is increase speed on 3s x5, 6s x10... by timeFrame 
     this.state = {
       isRanging: false,
       isActive: false,
@@ -181,9 +209,26 @@ class InputRangeText extends Component {
     }
   }
 
-  handleSubmitButtons(increment) {
+  holdIncreaseLoop(direction, index) {
+    this.intervalLink = setTimeout(() => {
+      const multiply = this.increaseMultiplyStep * index;
+      const increment = direction * this.props.step * multiply;
+      this.softChangeValue(this.props.value + increment);
+      this.holdIncreaseLoop(direction, index + 1);
+    }, this.timeFrame);
+  }
+
+  handlerMouseDownButtons (direction) {
     return event => {
       event.preventDefault();
+      this.holdIncreaseLoop(direction, 1);
+    }
+  }
+
+  handleMouseUpButtons(increment) {
+    return event => {
+      event.preventDefault();
+      clearInterval(this.intervalLink);
       this.softChangeValue(this.props.value + increment);
     };
   }
@@ -220,7 +265,8 @@ class InputRangeText extends Component {
 					className={this.classnames("irn__button irn_button-decrement", {
             "irn__disabled": decrementIsDisabled,
           })}
-          onClick={this.handleSubmitButtons(-1 * step)}
+          onMouseDown={this.handlerMouseDownButtons(-1)}
+          onMouseUp={this.handleMouseUpButtons(-1 * step)}
           disabled={disabled}
 				>
 					-
@@ -246,7 +292,8 @@ class InputRangeText extends Component {
 					className={this.classnames("irn__button irn_button-increment", {
             "irn__disabled": incrementIsDisabled,
           })}
-          onClick={this.handleSubmitButtons(+1 * step)}
+          onMouseDown={this.handlerMouseDownButtons(+1)}
+          onMouseUp={this.handleMouseUpButtons(+1 * step)}
           disabled={disabled}
 				>
 					+

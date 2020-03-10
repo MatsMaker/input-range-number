@@ -3,8 +3,8 @@ import './App.css';
 import InputRangeText from './input-range-text';
 
 const MIN_VALUE = 0;
-const MAX_VAlUE = 15;
-const STEP = 1;
+const MAX_VAlUE = 1000;
+const STEP = 3;
 
 function validationFn(nextValue) {
   return true;
