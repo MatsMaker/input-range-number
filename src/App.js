@@ -3,19 +3,16 @@ import './App.css';
 import InputRangeText from './input-range-text';
 
 const MIN_VALUE = 0;
-const MAX_VAlUE = 15;
-const STEP = 1;
+const MAX_VAlUE = 10;
+const STEP = 0.002;
 
 function validationFn(nextValue) {
-  if (Number(nextValue.toFixed(0)) === Number(nextValue)) {
-    return true;
-  }
-  return false;
+  return true;
 }
 
 function App() {
 
-  const [count, setCount] = useState(4);
+  const [count, setCount] = useState(5);
   const [checked, setChecked] = useState(false);
 
   return (
@@ -42,6 +39,8 @@ function App() {
         <InputRangeText
           min={MIN_VALUE}
           max={MAX_VAlUE}
+          precision={3}
+          unit={"USD"}
           step={STEP}
           value={count}
           onChange={setCount}

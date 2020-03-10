@@ -14,12 +14,38 @@ class InputRangeText extends Component {
       isActive: false,
       isInputting: false,
       isValid: true,
+      value: this.getViewValue(props.value, props.unit),
     };
     this.handleChangeInput = this.handleChangeInput.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+  }
+
+  extractValue(stringValue, unit) {
+    if (unit) {
+      return Number(stringValue.replace(" " + unit, ""));
+    } else {
+      return Number(stringValue);
+    }
+  }
+
+  getViewValue(value = this.state.value, unit = this.props.unit, precision = this.props.precision) {
+    if (unit) {
+      return value.toFixed(precision) + ' ' + unit;
+    } else {
+      return value.toFixed(precision);
+    }
+  }
+
+  getEditingValue(value) {
+    if (this.props.unit) {
+      return Number(value.replace(" " + this.props.unit, ""));
+    } else {
+      return Number(value);
+    }
   }
 
   componentDidMount() {
@@ -28,6 +54,7 @@ class InputRangeText extends Component {
     this.refs.eventBox.addEventListener("mousemove", this.handleMouseMove);
     this.refs.eventBox.addEventListener("mouseout", this.handleBlur);
     this.refs.input.addEventListener("blur", this.handleBlur);
+    this.refs.input.addEventListener("focus", this.handleFocus);
     this.updateRangePercent(this.props.value);
   }
 
@@ -40,6 +67,7 @@ class InputRangeText extends Component {
     this.refs.eventBox.removeEventListener("mousemove", this.handleMouseMove);
     this.refs.eventBox.removeEventListener("mouseout", this.handleBlur);
     this.refs.input.removeEventListener("blur", this.handleBlur);
+    this.refs.input.removeEventListener("focus", this.handleFocus);
   }
 
   softChangeValue = value => {
@@ -53,7 +81,8 @@ class InputRangeText extends Component {
       nextValue = this.props.min;
     }
     this.setState({
-      isValid: this.validation(nextValue)
+      isValid: this.validation(nextValue),
+      value: this.getViewValue(nextValue),
     });
     this.props.onChange(nextValue);
     this.updateRangePercent(nextValue);
@@ -62,7 +91,8 @@ class InputRangeText extends Component {
   hardChangeValue = nextValue => {
     this.props.onChange(nextValue);
     this.setState({
-      isValid: this.validation(nextValue)
+      isValid: this.validation(nextValue),
+      value: nextValue,
     });
     this.updateRangePercent(nextValue);
   };
@@ -102,6 +132,7 @@ class InputRangeText extends Component {
 
     const { max } = this.props;
     const exactValue = (max / 100) * inputPercent;
+    console.log(point, allWidth, inputPercent, exactValue);
     this.softChangeValue(exactValue);
   };
 
@@ -118,12 +149,21 @@ class InputRangeText extends Component {
     });
   }
 
+  handleFocus() {
+      this.setState({
+        value: this.props.value,
+      })
+  }
+
   handleBlur() {
-    this.setState({
-      isActive: false,
-      isRanging: false,
-      isInputting: false
-    });
+    if (this.state.isRunning || this.state.isInputting) {
+      this.setState({
+        isActive: false,
+        isRanging: false,
+        isInputting: false,
+        value: this.getViewValue(),
+      });
+    }
   }
 
   handleMouseUp(e) {
@@ -196,7 +236,7 @@ class InputRangeText extends Component {
           <input
 						className={this.classnames("irn__input")}
 						ref="input"
-						value={this.props.value}
+						value={this.state.value}
             onChange={this.handleChangeInput}
             type="text"
             disabled={disabled}
