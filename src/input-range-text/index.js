@@ -128,11 +128,9 @@ class InputRangeText extends Component {
   handleChangeRangePercent = point => {
     const allWidth = this.refs.eventBox.offsetWidth;
     const inputPercent = (point * 100) / allWidth;
-    this.refs.rangeOfFilled.style.width = `${inputPercent}%`;
 
     const { max } = this.props;
     const exactValue = (max / 100) * inputPercent;
-    console.log(point, allWidth, inputPercent, exactValue);
     this.softChangeValue(exactValue);
   };
 
