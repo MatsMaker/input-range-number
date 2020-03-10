@@ -42,7 +42,7 @@ class InputRangeText extends Component {
       isActive: false,
       isInputting: false,
       isValid: true,
-      value: this.getViewValue(props.value, props.unit),
+      value: props.value,
     };
     this.handleChangeInput = this.handleChangeInput.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -50,22 +50,6 @@ class InputRangeText extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
-  }
-
-  extractValue(stringValue, unit) {
-    if (unit) {
-      return Number(stringValue.replace(" " + unit, ""));
-    } else {
-      return Number(stringValue);
-    }
-  }
-
-  getViewValue(value = this.state.value, unit = this.props.unit, precision = this.props.precision) {
-    if (unit) {
-      return value.toFixed(precision) + ' ' + unit;
-    } else {
-      return value.toFixed(precision);
-    }
   }
 
   getEditingValue(value) {
@@ -110,7 +94,7 @@ class InputRangeText extends Component {
     }
     this.setState({
       isValid: this.validation(nextValue),
-      value: this.getViewValue(nextValue),
+      value: nextValue,
     });
     this.props.onChange(nextValue);
     this.updateRangePercent(nextValue);
@@ -187,7 +171,6 @@ class InputRangeText extends Component {
         isActive: false,
         isRanging: false,
         isInputting: false,
-        value: this.getViewValue(),
       });
     }
   }
@@ -252,8 +235,8 @@ class InputRangeText extends Component {
   }
 
   render() {
-    const { step, min, max, value, disabled } = this.props;
-    const { isRanging } = this.state;
+    const { step, min, max, value, disabled, unit } = this.props;
+    const { isRanging, isInputting } = this.state;
     const decrementIsDisabled = disabled || value === min;
     const incrementIsDisabled = disabled || value === max;
 
@@ -278,15 +261,23 @@ class InputRangeText extends Component {
 				>
 					<div className={this.classnames("irn__range")} ref="rangeOfFilled" />
           <input
-						className={this.classnames("irn__input")}
+						className={this.classnames(classnames("irn__input", {"irn__hide": !isInputting}))}
 						ref="input"
 						value={this.state.value}
             onChange={this.handleChangeInput}
             type="text"
             disabled={disabled}
 					/>
-          <div className={this.classnames("irn__event-box")}
-            ref="eventBox" />
+          { !isInputting && (
+            <div className={this.classnames("irn__visibility")}>
+                <div className={this.classnames("irn__value")}>{value}</div>
+                <div className={this.classnames("irn__unit")}>{unit}</div>
+            </div>
+          )}
+          <div
+            className={this.classnames("irn__event-box")}
+            ref="eventBox"
+          />
 				</div>
 				<button
 					className={this.classnames("irn__button irn_button-increment", {

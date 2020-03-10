@@ -3,7 +3,7 @@ import './App.css';
 import InputRangeText from './input-range-text';
 
 const MIN_VALUE = 0;
-const MAX_VAlUE = 1000;
+const MAX_VAlUE = 150;
 const STEP = 3;
 
 function validationFn(nextValue) {
@@ -36,6 +36,7 @@ function App() {
         <label htmlFor="cheese">Disable this element</label>
       </div>
       <div className="example-wrapper">
+        <div>Label message: </div>
         <InputRangeText
           min={MIN_VALUE}
           max={MAX_VAlUE}
