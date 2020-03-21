@@ -48,6 +48,7 @@ class InputRangeText extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
   }
@@ -64,7 +65,7 @@ class InputRangeText extends Component {
     this.refs.eventBox.addEventListener("mousedown", this.handleMouseDown);
     this.refs.eventBox.addEventListener("mouseup", this.handleMouseUp);
     this.refs.eventBox.addEventListener("mousemove", this.handleMouseMove);
-    this.refs.eventBox.addEventListener("mouseout", this.handleBlur);
+    this.refs.eventBox.addEventListener("mouseout", this.handleMouseOut);
     this.refs.input.addEventListener("blur", this.handleBlur);
     this.refs.input.addEventListener("focus", this.handleFocus);
     this.updateRangePercent(this.props.value);
@@ -77,7 +78,7 @@ class InputRangeText extends Component {
     );
     this.refs.eventBox.removeEventListener("mouseup", this.handleMouseUp);
     this.refs.eventBox.removeEventListener("mousemove", this.handleMouseMove);
-    this.refs.eventBox.removeEventListener("mouseout", this.handleBlur);
+    this.refs.eventBox.removeEventListener("mouseout", this.handleMouseOut);
     this.refs.input.removeEventListener("blur", this.handleBlur);
     this.refs.input.removeEventListener("focus", this.handleFocus);
   }
@@ -167,6 +168,16 @@ class InputRangeText extends Component {
 
   handleBlur() {
     if (this.state.isRunning || this.state.isInputting) {
+      this.setState({
+        isActive: false,
+        isRanging: false,
+        isInputting: false,
+      });
+    }
+  }
+
+  handleMouseOut() {
+    if (this.state.isRanging) {
       this.setState({
         isActive: false,
         isRanging: false,
